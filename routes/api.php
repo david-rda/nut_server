@@ -30,3 +30,4 @@ Route::post("/statement/add", [StatementController::class, "store"])->middleware
 Route::put("/statement/edit/{id}", [StatementController::class, "update"])->where(["id" => "[0-9]+"])->middleware("auth:api");
 Route::get("/statement/get/{id}", [StatementController::class, "show"])->where(["id" => "[0-9]+"])->middleware("auth:api");
 Route::get("/statement/list", [StatementController::class, "index"])->middleware("auth:api");
+Route::post("/statement/search", [StatementController::class, "filterStatement"])->middleware("auth:api");

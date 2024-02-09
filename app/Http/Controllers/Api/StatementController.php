@@ -105,4 +105,34 @@ class StatementController extends Controller
     {
         //
     }
+
+    public function filterStatement(Request $request) {
+        $statement = Statement::orderBy('id', 'DESC');
+        
+        if($request->company != null) {
+            $statement->where("overhead_number", "like", "%" . $request->overhead_number . "%");
+        }
+        
+        if($request->overhead_date != null) {
+            $statement->where("overhead_date", $request->overhead_date);
+        }
+
+        if($request->store_address != null) {
+            $statement->where("store_address", "like", "%" . $request->store_address . "%");
+        }
+
+        if($request->full_amount != null) {
+            $statement->where("full_amount", "like", "%" . $request->full_amount . "%");
+        }
+        
+        if($request->beneficiary_name != null) {
+            $statement->where("beneficiary_name", "like", "%" . $request->beneficiary_name . "%");
+        }
+        
+        if($request->status != null) {
+            $statement->where("status", "like", "%" . $request->status . "%");
+        }
+
+        return $statement->paginate(30);
+    }
 }

@@ -26,7 +26,8 @@ class UserController extends Controller
             "mobile" => $request->mobile,
             "password" => bcrypt($request->password),
             "identification_code" => intval(rand()),
-            "personal_id" => intval(rand())
+            "personal_id" => intval(rand()),
+            "permission" => "operator"
         ]);
 
         if($add) {
@@ -41,7 +42,7 @@ class UserController extends Controller
     }
 
     public function searchUser(Request $request) {
-        $user = User::orderBy('id','desc');
+        $user = User::orderBy('id', 'DESC');
         
         if($request->company != null) {
             $user->where("company_name", "like", "%" . $request->company . "%");
