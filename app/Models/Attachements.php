@@ -17,6 +17,7 @@ class Attachements extends Model
     protected $fillable = [
         "statement_id",
         "file",
+        "name"
     ];
 
     public $timestamps = true;

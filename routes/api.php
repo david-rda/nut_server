@@ -31,3 +31,4 @@ Route::put("/statement/edit/{id}", [StatementController::class, "update"])->wher
 Route::get("/statement/get/{id}", [StatementController::class, "show"])->where(["id" => "[0-9]+"])->middleware("auth:api");
 Route::get("/statement/list", [StatementController::class, "index"])->middleware("auth:api");
 Route::post("/statement/search", [StatementController::class, "filterStatement"])->middleware("auth:api");
+Route::post("/statement/file/upload", [StatementController::class, "uploadFile"]);

@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::create('attachements', function (Blueprint $table) {
             $table->id();
-            $table->integer("statement_id");
+            $table->integer("statement_id")->nullable();
+            $table->string("name")->nullable();
             $table->binary("file");
             $table->softDeletes();
             $table->timestamps();

@@ -36,12 +36,11 @@ class StatementController extends Controller
             "store_address" => "required",
             "beneficiary_name" => "required",
             "card_number" => "required",
+            "full_amount" => "required",
         ]);
 
         try {
-
             DB::transaction(function() use($request) {
-
                 $statement = new Statement();
 
                 $statement->user_id = Auth::id();
@@ -56,18 +55,11 @@ class StatementController extends Controller
 
                 $statement->save();
 
-                // foreach($request->file("files") as $data) {
-                //     $file = $data->getRealPath();
-            
-                //     $content = file_get_contents($file);
-    
-                //     $base64 = base64_encode($content);
-
-                //     $attachement = new Attachements();
-                //     $attachement->statement_id = $statement->id;
-                //     $attachement->file = $base64;
-                //     $attachement->save();
-                // }
+                foreach($request->files as $id) {
+                    $attachement = Attachements::find($id);
+                    $attachement->statement_id = $statement->id;
+                    $attachement->save();
+                }
 
                 foreach($request->products as $products) {
                     $product = new StatementProduct();
@@ -88,6 +80,25 @@ class StatementController extends Controller
                 "error" => "განაცხადი ვერ დაემატა."
             ], 422);
         }
+    }
+
+    public function uploadFile(Request $request) {
+        if($request->hasFile("files")) {
+            $data = $request->file("files");
+            $file = $data->getRealPath();
+            $originalName = $data->getClientOriginalName();
+
+            $content = file_get_contents($file);
+
+            $base64 = base64_encode($content);
+
+            $attachement = new Attachements();
+            $attachement->file = $base64;
+            $attachement->name = $originalName;
+            $attachement->save();
+        }
+
+        return $attachement->id;
     }
 
     /**
