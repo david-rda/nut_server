@@ -32,3 +32,4 @@ Route::get("/statement/get/{id}", [StatementController::class, "show"])->where([
 Route::get("/statement/list", [StatementController::class, "index"])->middleware("auth:api");
 Route::post("/statement/search", [StatementController::class, "filterStatement"])->middleware("auth:api");
 Route::post("/statement/file/upload", [StatementController::class, "uploadFile"]);
+Route::delete("/statement/file/delete/{id}", [StatementController::class, "deleteFile"]);

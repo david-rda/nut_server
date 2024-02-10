@@ -55,7 +55,7 @@ class StatementController extends Controller
 
                 $statement->save();
 
-                foreach($request->files as $id) {
+                foreach($request["files"] as $id) {
                     $attachement = Attachements::find($id);
                     $attachement->statement_id = $statement->id;
                     $attachement->save();
@@ -82,23 +82,52 @@ class StatementController extends Controller
         }
     }
 
+    public function deleteFile(int $id) {
+        $delete = Attachements::find($id)->delete();
+
+        if($delete) {
+            return response()->json([
+                "success" => "წაიშალა."
+            ], 200); 
+        }else {
+            return response()->json([
+                "error" => "ვერ წაიშალა."
+            ], 422);
+        }
+    }
+
     public function uploadFile(Request $request) {
         if($request->hasFile("files")) {
+
             $data = $request->file("files");
-            $file = $data->getRealPath();
-            $originalName = $data->getClientOriginalName();
 
-            $content = file_get_contents($file);
+            if($data->getClientOriginalExtension() == "pdf") {
+                $file = $data->getRealPath();
+                $originalName = $data->getClientOriginalName();
 
-            $base64 = base64_encode($content);
+                $content = file_get_contents($file);
 
-            $attachement = new Attachements();
-            $attachement->file = $base64;
-            $attachement->name = $originalName;
-            $attachement->save();
+                $base64 = base64_encode($content);
+
+                $attachement = new Attachements();
+                $attachement->file = $base64;
+                $attachement->name = $originalName;
+                $attachement->save();
+
+                return [
+                    "id" => $attachement->id,
+                    "name" => $attachement->name,
+                ];
+            }else {
+                return response()->json([
+                    "errors" => [
+                        "error" => [
+                            "დასაშვებია მხოლოდ pdf ფორმატის ფაილის მიმაგრება"
+                        ]
+                    ]
+                ], 422);
+            }
         }
-
-        return $attachement->id;
     }
 
     /**
