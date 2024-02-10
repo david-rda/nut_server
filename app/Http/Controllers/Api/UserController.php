@@ -56,6 +56,11 @@ class UserController extends Controller
             $user->where("mobile", "like", "%" . $request->mobile . "%");
         }
 
+        if($request->personal_id != null && $request->mobile != null) {
+            $user->where("personal_id", "like", "%" . $request->personal_id . "%")
+                ->where("mobile", "like", "%" . $request->mobile . "%");
+        }
+
         if($request->personal_id != null) {
             $user->where("personal_id", "like", "%" . $request->personal_id . "%");
         }
@@ -74,6 +79,16 @@ class UserController extends Controller
         
         if($request->status != null) {
             $user->where("status", "like", "%" . $request->status . "%");
+        }
+
+        if($request->permission != null && $request->status != null) {
+            $user->where("permission", "like", "%" . $request->permission . "%")
+                ->where("status", "like", "%" . $request->status . "%");
+        }
+
+        if($request->permission && $request->mobile) {
+            $user->where("permission", "like", "%" . $request->permission . "%")
+                ->where("mobile", "like", "%" . $request->mobile . "%");
         }
 
         return $user->paginate(30);
