@@ -52,8 +52,18 @@ class UserController extends Controller
             $user->where("name", "like", "%" . $request->name . "%");
         }
 
+        if($request->name != null && $request->company != null) {
+            $user->where("name", "like", "%" . $request->name . "%")
+                ->where("company_name", "like", "%" . $request->company . "%");
+        }
+
         if($request->mobile != null) {
             $user->where("mobile", "like", "%" . $request->mobile . "%");
+        }
+
+        if($request->mobile != null && $request->company) {
+            $user->where("mobile", "like", "%" . $request->mobile . "%")
+                ->where("company_name", "like", "%" . $request->company . "%");
         }
 
         if($request->personal_id != null && $request->mobile != null) {
@@ -64,6 +74,16 @@ class UserController extends Controller
         if($request->personal_id != null) {
             $user->where("personal_id", "like", "%" . $request->personal_id . "%");
         }
+
+        if($request->personal_id != null && $request->email != null) {
+            $user->where("personal_id", "like", "%" . $request->personal_id . "%")
+                ->where("email", "like", "%" . $request->email . "%");
+        }
+        
+        if($request->personal_id != null && $request->mobile != null) {
+            $user->where("personal_id", "like", "%" . $request->personal_id . "%")
+                ->where("mobile", "like", "%" . $request->mobile . "%");
+        }
         
         if($request->email != null) {
             $user->where("email", "like", "%" . $request->email . "%");
@@ -71,6 +91,11 @@ class UserController extends Controller
         
         if($request->id_code != null) {
             $user->where("identification_code", "like", "%" . $request->id_code . "%");
+        }
+
+        if($request->id_code != null && $request->email != null) {
+            $user->where("identification_code", "like", "%" . $request->id_code . "%")
+                ->where("email", "like", "%" . $request->email . "%");
         }
         
         if($request->permission != null) {
