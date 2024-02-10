@@ -9,8 +9,8 @@ use App\Http\Controllers\Api\StatementController;
 
 Route::post("/signin", [AuthController::class, "signin"]);
 Route::post("/signup", [AuthController::class, "signup"]);
+Route::get("/signout", [AuthController::class, "signout"]);
 
-// Route::post("/signout", [AuthController::class, "signout"])->middleware("auth:api");
 Route::post("/change_password", [AuthController::class, "changePassword"])->middleware("auth:api");
 
 Route::get("/user/list", [UserController::class, "userList"])->middleware("auth:api");
