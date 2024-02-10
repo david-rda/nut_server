@@ -33,3 +33,4 @@ Route::get("/statement/list", [StatementController::class, "index"])->middleware
 Route::post("/statement/search", [StatementController::class, "filterStatement"])->middleware("auth:api");
 Route::post("/statement/file/upload", [StatementController::class, "uploadFile"]);
 Route::delete("/statement/file/delete/{id}", [StatementController::class, "deleteFile"]);
+Route::get("/statement/pdf/{id}", [StatementController::class, "generatePdf"]);

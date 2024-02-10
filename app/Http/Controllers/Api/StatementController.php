@@ -12,6 +12,7 @@ use App\Models\User;
 use Auth;
 use DB;
 use Carbon\Carbon;
+use PDF;
 
 class StatementController extends Controller
 {
@@ -174,5 +175,11 @@ class StatementController extends Controller
         }
 
         return $statement->paginate(30);
+    }
+
+    public function generatePdf(int $id) {
+        $data = Statement::find($id);
+
+        return PDF::loadView("pdf.statement", [ "data" => $data ])->setOption(['defaultFont' => 'sans-serif'])->stream("statement.pdf");
     }
 }
