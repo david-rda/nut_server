@@ -9,7 +9,7 @@ use App\Models\User;
 class UserController extends Controller
 {
     public function userList() {
-        return User::all();
+        return User::paginate(30);
     }
 
     public function addOperator(Request $request) {
