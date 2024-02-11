@@ -57,6 +57,11 @@ class UserController extends Controller
                 ->where("company_name", "like", "%" . $request->company . "%");
         }
 
+        if($request->name != null && $request->mobile != null) {
+            $user->where("name", "like", "%" . $request->name . "%")
+                ->where("mobile", "like", "%" . $request->mobile . "%");
+        }
+
         if($request->mobile != null) {
             $user->where("mobile", "like", "%" . $request->mobile . "%");
         }
