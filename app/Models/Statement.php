@@ -75,4 +75,12 @@ class Statement extends Model
     public function getLogsAttribute() {
         return $this->log;
     }
+
+    public function getCreatedAtAttribute($value) {
+        return $value->format("Y-m-d");
+    }
+
+    public function getUpdatedAtAttribute($value) {
+        return $value->format("Y-m-d");
+    }
 }

@@ -321,9 +321,11 @@ class StatementController extends Controller
         }
     }
 
-    public function downloadExcel($from, $to) {
-        if(Auth::user()->permission == "company") {
-            return Excel::download(new StatementExport($from, $to, Auth::id()), "data.xlsx");
+    public function downloadExcel($from = null, $to = null, $status = null, $user_id = null) {
+        if($user_id != null && User::find($user_id)->permission == "company") {
+            return Excel::download(new StatementExport($from, $to, $status, $user_id), "data.xlsx");
         }
+
+        return Excel::download(new StatementExport($from, $to, $status), "data.xlsx");
     }
 }

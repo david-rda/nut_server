@@ -40,4 +40,4 @@ Route::put("/statement/change/status/{id}", [StatementController::class, "change
 
 Route::get("/statement/statistic", [StatementController::class, "statistic"])->middleware("auth:api");
 Route::put("/statement/change/massive", [StatementController::class, "changeMassiveStatus"])->middleware("auth:api");
-Route::get("/statement/report/{from}/{to}", [StatementController::class, "downloadExcel"]);
+Route::get("/statement/report/{from?}/{to?}/{status?}/{user_id?}", [StatementController::class, "downloadExcel"]);
