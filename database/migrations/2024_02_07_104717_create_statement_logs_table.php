@@ -13,9 +13,10 @@ return new class extends Migration
     {
         Schema::create('statement_logs', function (Blueprint $table) {
             $table->id();
-            $table->integer("statement_id");
-            $table->integer("user_id");
-            $table->text("comment");
+            $table->integer("statement_id")->nullable();
+            $table->integer("user_id")->nullable();
+            $table->integer("operator_id")->nullable();
+            $table->text("comment")->nullable();
             $table->timestamps();
         });
     }

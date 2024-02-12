@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('statements', function (Blueprint $table) {
             $table->id();
             $table->integer("user_id")->nullable();
+            $table->integer("operator_id")->nullable();
             $table->string("status", 20)->nullable();
             $table->integer("attachement_id")->nullable();
             $table->string("overhead_number", 50)->nullable(); // ზედნადების ნომერი

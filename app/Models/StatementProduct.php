@@ -40,7 +40,7 @@ class StatementProduct extends Model
     }
 
     public function product() {
-        return $this->hasMany(Product::class, "id", "product_id")->where("status", "enabled");
+        return $this->hasOne(Product::class, "id", "product_id")->where("status", "enabled");
     }
 
     public function getProductsAttribute() {

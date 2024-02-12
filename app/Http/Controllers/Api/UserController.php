@@ -9,7 +9,7 @@ use App\Models\User;
 class UserController extends Controller
 {
     public function userList() {
-        return User::paginate(30);
+        return User::orderBy("id", "DESC")->paginate(30);
     }
 
     public function addOperator(Request $request) {
@@ -166,5 +166,9 @@ class UserController extends Controller
                 "error" => "რეგისტრაცია ვერ განხორციელდა."
             ], 422);
         }
+    }
+
+    public function operators() {
+        return User::where("permission", "like", "%operator%")->get();
     }
 }

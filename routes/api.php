@@ -13,6 +13,8 @@ Route::get("/signout", [AuthController::class, "signout"]);
 
 Route::post("/change_password", [AuthController::class, "changePassword"])->middleware("auth:api");
 
+Route::get("/operator/list", [UserController::class, "operators"])->middleware("auth:api");
+
 Route::get("/user/list", [UserController::class, "userList"])->middleware("auth:api");
 Route::get("/user/get/{id}", [UserController::class, "getUser"])->where(["id" => "[0-9]+"])->middleware("auth:api");
 Route::put("/user/edit/{id}", [UserController::class, "editUser"])->where(["id" => "[0-9]+"])->middleware("auth:api");
@@ -34,3 +36,8 @@ Route::post("/statement/search", [StatementController::class, "filterStatement"]
 Route::post("/statement/file/upload", [StatementController::class, "uploadFile"]);
 Route::delete("/statement/file/delete/{id}", [StatementController::class, "deleteFile"]);
 Route::get("/statement/pdf/{id}", [StatementController::class, "generatePdf"]);
+Route::put("/statement/change/status/{id}", [StatementController::class, "changeStatus"])->middleware("auth:api");
+
+Route::get("/statement/statistic", [StatementController::class, "statistic"])->middleware("auth:api");
+Route::put("/statement/change/massive", [StatementController::class, "changeMassiveStatus"])->middleware("auth:api");
+Route::get("/statement/report/{from}/{to}", [StatementController::class, "downloadExcel"]);

@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\StatementProduct;
+use App\Models\StatementLog;
 
 class Statement extends Model
 {
@@ -17,7 +18,7 @@ class Statement extends Model
 
     protected $fillable = [
         'user_id',
-        "product_id",
+        "operator_id",
         "status",
         "attachement_id",
         "overhead_number",
@@ -34,11 +35,15 @@ class Statement extends Model
     ];
 
     protected $appends = [
-        "statement_products"
+        "statement_products",
+        "operator",
+        "logs"
     ];
 
     protected $hidden = [
-        "statement_product"
+        "statement_product",
+        "user",
+        "log"
     ];
 
     public $timestamps = true;
@@ -51,7 +56,23 @@ class Statement extends Model
         return $this->hasMany(StatementProduct::class, "statement_id", "id");
     }
 
+    public function log() {
+        return $this->hasMany(StatementLog::class, "statement_id", "id");
+    }
+
+    public function user() {
+        return $this->hasOne(User::class, "id", "operator_id")->where("permission", "like", "%operator%");
+    }
+
     public function getStatementProductsAttribute() {
         return $this->statement_product;
+    }
+
+    public function getOperatorAttribute() {
+        return $this->user;
+    }
+
+    public function getLogsAttribute() {
+        return $this->log;
     }
 }

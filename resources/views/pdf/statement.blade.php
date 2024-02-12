@@ -71,12 +71,10 @@
             </thead>
             <tbody>
                 @foreach ($data["statement_products"] as $item)
-                    @foreach ($item["products"] as $products)
                         <tr>
-                            <td>{{ $products->name }}</td>
+                            <td>{{ $item["products"]->name }}</td>
                             <td>{{ $item->price }}</td>
                         </tr>
-                    @endforeach
                 @endforeach
             </tbody>
         </table>
