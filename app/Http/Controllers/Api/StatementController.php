@@ -167,7 +167,7 @@ class StatementController extends Controller
             ]);
     
             try {
-                DB::transaction(function() use($request, $statement) {    
+                DB::transaction(function() use($request, $statement, $id) {    
                     $statement->user_id = Auth::id();
                     $statement->status = "new";
                     $statement->overhead_number = $request->overhead_number;
@@ -179,9 +179,10 @@ class StatementController extends Controller
     
                     $statement->save();
                     
-                    foreach($request["files"] as $id) {
-                        $attachement = Attachements::find($id);
-                        $attachement->statement_id = $statement->id;
+                    Attachements::where("statement_id", $id)->delete();
+                    foreach($request["files"] as $file_id) {
+                        $attachement = Attachements::find($file_id);
+                        $attachement->statement_id = $id;
                         $attachement->save();
                     }
 

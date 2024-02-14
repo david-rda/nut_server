@@ -37,13 +37,15 @@ class Statement extends Model
     protected $appends = [
         "statement_products",
         "operator",
-        "logs"
+        "logs",
+        "company_name"
     ];
 
     protected $hidden = [
         "statement_product",
         "user",
-        "log"
+        "log",
+        "company_user"
     ];
 
     public $timestamps = true;
@@ -64,6 +66,10 @@ class Statement extends Model
         return $this->hasOne(User::class, "id", "operator_id")->where("permission", "like", "%operator%");
     }
 
+    public function company_user() {
+        return $this->hasOne(User::class, "id", "user_id");
+    }
+
     public function getStatementProductsAttribute() {
         return $this->statement_product;
     }
@@ -76,11 +82,15 @@ class Statement extends Model
         return $this->log;
     }
 
-    public function getCreatedAtAttribute($value) {
-        return $value->format("Y-m-d");
-    }
+    // public function getCreatedAtAttribute($value) {
+    //     return $value->format("Y-m-d");
+    // }
 
-    public function getUpdatedAtAttribute($value) {
-        return $value->format("Y-m-d");
+    // public function getUpdatedAtAttribute($value) {
+    //     return $value->format("Y-m-d");
+    // }
+
+    public function getCompanyNameAttribute() {
+        return $this->company_user->company_name;
     }
 }
