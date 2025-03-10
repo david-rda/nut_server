@@ -19,7 +19,7 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['https://nuts.rda.gov.ge'],
+    'allowed_origins' => ['*'], // https://nuts.rda.gov.ge
 
     'allowed_origins_patterns' => [],
 

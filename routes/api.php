@@ -21,6 +21,7 @@ Route::post("/user/edit/{id}", [UserController::class, "editUser"])->where(["id"
 Route::post("/search/user", [UserController::class, "searchUser"])->middleware("auth:api"); // მომხმარებელთა ფილტრაციის მარშუტი
 Route::post("/operator/add", [UserController::class, "addOperator"])->middleware("auth:api"); // სისტემაში ოპერატორის დამატების მარშუტი
 Route::get("/user/change/status/{id}", [UserController::class, "change"])->middleware("auth:api"); // მომხმარებლისთვის სტატუსის ცვლილების მარშუტი
+Route::get("/user/report", [UserController::class, "userReport"])->middleware("auth:api"); // მომხმარებლების რეპორტის ჩამოტვირთვის მარშუტი
 
 // პროდუქტების მარსუტები
 Route::post("/product/add", [ProductController::class, "store"])->middleware("auth:api"); // პროდუქტის დამატების მარშუტი
@@ -42,4 +43,4 @@ Route::post("/statement/change/status/{id}", [StatementController::class, "chang
 
 Route::get("/statement/statistic", [StatementController::class, "statistic"])->middleware("auth:api"); // განაცხადების სტატუსების სტატისტიკის მარშუტი
 Route::post("/statement/change/massive", [StatementController::class, "changeMassiveStatus"])->middleware("auth:api");// განაცხად(ებ)ისთვის სტატუსის ცვლილების მარშუტი
-Route::get("/statement/report/{from?}/{to?}/{user_id?}", [StatementController::class, "downloadExcel"]); // განაცხადების რეპორტის მარშუტი
+Route::get("/statement/report/{from?}/{to?}/{user_id?}", [StatementController::class, "downloadExcel"])->middleware("auth:api"); // განაცხადების რეპორტის მარშუტი

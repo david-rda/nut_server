@@ -435,6 +435,7 @@ class StatementController extends Controller
                 "approved" => Statement::where("status", "approved")->where("operator_id", Auth::id())->get()->count(),
                 "stopped" => Statement::where("status", "stopped")->where("operator_id", Auth::id())->get()->count(),
                 "new" => Statement::where("status", "new")->where("operator_id", Auth::id())->get()->count(),
+                "user" => Auth::user(),
             ];
         }
 
@@ -444,6 +445,7 @@ class StatementController extends Controller
                 "approved" => Statement::where("status", "approved")->get()->count(),
                 "stopped" => Statement::where("status", "stopped")->get()->count(),
                 "new" => Statement::where("status", "new")->get()->count(),
+                "user" => Auth::user(),
             ];
         }
 
@@ -453,6 +455,7 @@ class StatementController extends Controller
                 "approved" => Statement::where("status", "approved")->where("user_id", Auth::id())->get()->count(),
                 "stopped" => Statement::where("status", "stopped")->where("user_id", Auth::id())->get()->count(),
                 "new" => Statement::where("status", "new")->where("user_id", Auth::id())->get()->count(),
+                "user" => Auth::user(),
             ];
         }
     }

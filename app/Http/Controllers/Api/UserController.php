@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
+use Excel;
+use App\Exports\UserExport;
 
 class UserController extends Controller
 {
@@ -176,5 +178,9 @@ class UserController extends Controller
 
     public function operators() {
         return User::where("permission", "like", "%operator%")->get();
+    }
+
+    public function userReport(Request $request) {
+        return Excel::download(new UserExport(), "users.xlsx");
     }
 }
