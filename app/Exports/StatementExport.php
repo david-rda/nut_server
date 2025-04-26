@@ -12,9 +12,13 @@ use App\Models\User;
 
 class StatementExport implements FromArray, withHeadings, WithStyles
 {
-    private $from;
-    private $to;
-    private $user_id;
+    /**
+     * ქვემოთ მოცემული ცვლადები საჭიროა მონაცემების გასაფილტრად, რათა მოხდეს
+     * ბაზაში არსებული ინფორმაციების რეპორტინგი
+     */
+    private $from; // ამ ცვლადში ინახება საწყისი თარიღი თუ, რომელი თარიღიდან დაწყებული მოხდეს ინფორმაციის მოძებნა
+    private $to; // ამ ცვლადში ინახება საბოლოო თარიღი თუ, რომელი თარიღით დამთავრებული მოხდეს ინფორმაციის მოძებნა
+    private $user_id; // ცვლადში იანხება მოხმარებლის აიდი, რათა შემდგომში მოხდეს გაფილტვრა მისი როლის მიხედვით
 
     public function __construct($from = null, $to = null, $user_id = null) {
         $this->from = $from;
@@ -22,6 +26,8 @@ class StatementExport implements FromArray, withHeadings, WithStyles
         $this->user_id = $user_id;
     }
 
+    // მოცემული მეთოდის დახმარებით ხდება ექსელის ფაილის სათაურების ტექსტის გამუქება
+    // 1 ნიშნავს პირველივე მწკრივს/row-ს
     public function styles(Worksheet $sheet) {
         return [
             1 => [
@@ -30,6 +36,7 @@ class StatementExport implements FromArray, withHeadings, WithStyles
         ];
     }
 
+    // მოცემული მეთოდის დახმარებით ხდება ექსელის ფაილში სათაურების დასახელებების განსაზღვრა
     public function headings(): array
     {
         $data = [

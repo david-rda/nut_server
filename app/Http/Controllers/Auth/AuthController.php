@@ -10,6 +10,13 @@ use Hash;
 
 class AuthController extends Controller
 {
+    /**
+     * @method POST
+     * @return json
+     * @param Request
+     * 
+     * ავტორიზაციის მეთოდი
+     */
     public function signin(Request $request) {
         $data = $this->validate($request, [
             "email" => "required|email",
@@ -34,6 +41,13 @@ class AuthController extends Controller
         }
     }
 
+    /**
+     * @method POST
+     * @return json
+     * @param Request
+     * 
+     * რეგისტრაციის მეთოდი
+     */
     public function signup(Request $request) {
         $this->validate($request, [
             'name' => 'required',
@@ -61,11 +75,21 @@ class AuthController extends Controller
 
         if($user) {
             return response()->json([
-                "success" => "რეგისტრაცია განხორციელდა."
+                "success" => [
+                    "message" => [
+                        "success" => [
+                            "რეგისტრაცია განხორციელდა."
+                        ]
+                    ],
+                ]
             ], 200);
         }else {
             return response()->json([
-                "error" => "რეგისტრაცია ვერ განხორციელდა."
+                "errors" => [
+                    "error" => [
+                        "რეგისტრაცია ვერ განხორციელდა."
+                    ]
+                ]
             ], 422);
         }
     }
@@ -96,18 +120,25 @@ class AuthController extends Controller
             "success" => [
                 "message" => [
                     "success" => [
-                        "Successfully logged in!"
+                        "პაროლის შეცვლა განხორციელდა."
                     ]
                 ],
             ]
         ], 200);
     }
 
+    /**
+     * @method POST
+     * @param Request
+     * @return json
+     * 
+     * სისტემიდან გამოსვლის მეთოდი
+     */
     public function signout(Request $request) {
         Auth::logout();
 
         return response()->json([
-            "success" => "logged out!"
+            "success" => "სისტემიდან გამოსვლა განხორციელდა."
         ], 200);
     }
 }

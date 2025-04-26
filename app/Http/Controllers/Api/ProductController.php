@@ -16,12 +16,24 @@ class ProductController extends Controller
         return Product::paginate(20);
     }
 
+    /**
+     * @method GET
+     * @param null
+     * @return json
+     * 
+     * მოცემული მეთოდის დახმარებით ხდება ბაზიდან პროდუქტების/პესტიციდების გამოტანა
+     * აქტიური სტატუსის მიხედვით, 
+     */
     public function byStatus() {
         return Product::where("status", "enabled")->get();
     }
 
     /**
-     * Store a newly created resource in storage.
+     * @method POST
+     * @param Request
+     * @return json
+     * 
+     * მოცემული მეთოდის დახმარებით ხდება პროდუქტის/პესტიციდის დამატება
      */
     public function store(Request $request)
     {
@@ -47,7 +59,12 @@ class ProductController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * @method GET
+     * @param int
+     * @return json
+     * 
+     * მოცემული მეთოდის დახმარებით ხდება
+     * კონკრეტული პროდუქტის/პესტიციდის ინფორმაციის გამოტანა
      */
     public function show(int $id)
     {
@@ -55,7 +72,11 @@ class ProductController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * @method POST
+     * @param Request, int $id
+     * @return json
+     * 
+     * მოცემული მეთოდის დახმარებით ხდება პროდუქტის/პესტიციდის დარედაქტირება
      */
     public function update(Request $request, int $id)
     {

@@ -14,10 +14,11 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         User::create([
-            "email" => "marina.sturua@nfa.gov.ge",
-            "name" => "მარინა სტურუა",
+            "email" => "@rda.gov.ge",
+            "name" => "სალომე ბადაშვილი",
             "mobile" => 598959175,
-            "password" => bcrypt(1234)
+            "personal_id" => 7,
+            "password" => bcrypt("Salome33!")
         ]);
     }
 }

@@ -8,10 +8,24 @@ use App\Models\User;
 
 class UserController extends Controller
 {
+    /**
+     * @method GET
+     * @param null
+     * @return json
+     * 
+     * მოცემული მეთოდის დახმარებით ხდება მომხმარებლების გამოტანა
+     */
     public function userList() {
         return User::orderBy("id", "DESC")->paginate(30);
     }
 
+    /**
+     * @method POST
+     * @param Request
+     * @return json
+     * 
+     * მოცემული მეთოდის დახმარებით ხდება ოპერატორის დამატება
+     */
     public function addOperator(Request $request) {
         $this->validate($request, [
             "name" => "required",
@@ -124,10 +138,24 @@ class UserController extends Controller
         return $user->paginate(30);
     }
 
+    /**
+     * @method GET
+     * @param null
+     * @return json
+     * 
+     * მოცემული მეთოდის დახმარებით ხდება კონკრეტული მომხმარებლის ინფორმაციის გამოტანა
+     */
     public function getUser(int $id) {
         return User::find($id);
     }
 
+    /**
+     * @method POST
+     * @param int id
+     * @return json
+     * 
+     * მოცემული მეთოდის დახმარებით ხდება მომხმარებლის სტატუსის ცვლილება
+     */
     public function change(int $id) {
         try {
             $user = User::find($id);
@@ -135,12 +163,12 @@ class UserController extends Controller
             $user->save();
 
             return response()->json([
-                "success" => "ავტორიზირდა.",
+                "success" => "სტატუსი შეიცვალა.",
                 "users" => User::orderBy("id", "DESC")->paginate(30)
             ], 200);
         }catch(Exception $e) {
             return response()->json([
-                "error" => "ვერ ავტორიზირდა."
+                "error" => "სტატუსი ვერ შეიცვალა."
             ], 422); 
         }
     }
@@ -174,6 +202,13 @@ class UserController extends Controller
         }
     }
 
+    /**
+     * @method GET
+     * @param null
+     * @return json
+     * 
+     * მოცემული მეთოდის დახმარებით ხდება ოპერატორების წამოღება ბაზიდან
+     */
     public function operators() {
         return User::where("permission", "like", "%operator%")->get();
     }

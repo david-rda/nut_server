@@ -12,6 +12,9 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
+    // მოცემული ცვლადი განსაზღვრავს თუ რომელ ცხრილთან მუშაობს კონკრეტული მოდელი
+    protected $table = "users";
+
     /**
      * The attributes that are mass assignable.
      *
@@ -29,6 +32,7 @@ class User extends Authenticatable
         "permission",
         "mobile",
         "password",
+        "is_active"
     ];
 
     protected $primaryKey = "id";
@@ -41,5 +45,13 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+    ];
+
+    /**
+     * მოცემული მოსავიი გამოიყენება იმისთვის, რომ მოხდეს ბაზის ველის
+     * კონვერტირება სასურველ ფორმატში
+     */
+    protected $casts = [
+        "is_active" => "integer"
     ];
 }

@@ -15,7 +15,8 @@ class Product extends Model
     protected $primaryKey = "id";
 
     protected $fillable = [
-        "name"
+        "name",
+        "status"
     ];
 
     public $timestamps = true;
