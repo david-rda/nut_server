@@ -5,27 +5,15 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
+use Excel;
+use App\Exports\UserExport;
 
 class UserController extends Controller
 {
-    /**
-     * @method GET
-     * @param null
-     * @return json
-     * 
-     * მოცემული მეთოდის დახმარებით ხდება მომხმარებლების გამოტანა
-     */
     public function userList() {
         return User::orderBy("id", "DESC")->paginate(30);
     }
 
-    /**
-     * @method POST
-     * @param Request
-     * @return json
-     * 
-     * მოცემული მეთოდის დახმარებით ხდება ოპერატორის დამატება
-     */
     public function addOperator(Request $request) {
         $this->validate($request, [
             "name" => "required",
@@ -58,117 +46,44 @@ class UserController extends Controller
     public function searchUser(Request $request) {
         $user = User::orderBy('id', 'DESC');
         
-        if($request->company_name != null) {
-            $user->where("company_name", "like", "%" . $request->company_name . "%");
-        }
-        
-        if($request->name != null) {
-            $user->where("name", "like", "%" . $request->name . "%");
-        }
-
-        if($request->name != null && $request->company != null) {
-            $user->where("name", "like", "%" . $request->name . "%")
-                ->where("company_name", "like", "%" . $request->company . "%");
-        }
-
-        if($request->name != null && $request->mobile != null) {
-            $user->where("name", "like", "%" . $request->name . "%")
-                ->where("mobile", "like", "%" . $request->mobile . "%");
-        }
-
-        if($request->mobile != null) {
-            $user->where("mobile", "like", "%" . $request->mobile . "%");
-        }
-
-        if($request->mobile != null && $request->company) {
-            $user->where("mobile", "like", "%" . $request->mobile . "%")
-                ->where("company_name", "like", "%" . $request->company . "%");
-        }
-
-        if($request->personal_id != null && $request->mobile != null) {
-            $user->where("personal_id", "like", "%" . $request->personal_id . "%")
-                ->where("mobile", "like", "%" . $request->mobile . "%");
-        }
-
-        if($request->personal_id != null) {
-            $user->where("personal_id", "like", "%" . $request->personal_id . "%");
-        }
-
-        if($request->personal_id != null && $request->email != null) {
-            $user->where("personal_id", "like", "%" . $request->personal_id . "%")
-                ->where("email", "like", "%" . $request->email . "%");
-        }
-        
-        if($request->personal_id != null && $request->mobile != null) {
-            $user->where("personal_id", "like", "%" . $request->personal_id . "%")
-                ->where("mobile", "like", "%" . $request->mobile . "%");
-        }
-        
-        if($request->email != null) {
-            $user->where("email", "like", "%" . $request->email . "%");
-        }
-        
-        if($request->id_code != null) {
-            $user->where("identification_code", "like", "%" . $request->id_code . "%");
-        }
-
-        if($request->id_code != null && $request->email != null) {
-            $user->where("identification_code", "like", "%" . $request->id_code . "%")
-                ->where("email", "like", "%" . $request->email . "%");
-        }
-        
-        if($request->permission != null) {
-            $user->where("permission", "like", "%" . $request->permission . "%");
-        }
-        
-        if($request->status != null) {
-            $user->where("status", "like", "%" . $request->status . "%");
-        }
-
-        if($request->permission != null && $request->status != null) {
-            $user->where("permission", "like", "%" . $request->permission . "%")
-                ->where("status", "like", "%" . $request->status . "%");
-        }
-
-        if($request->permission && $request->mobile) {
-            $user->where("permission", "like", "%" . $request->permission . "%")
-                ->where("mobile", "like", "%" . $request->mobile . "%");
-        }
+        $request->company_name && $user->where("company_name","like","%".trim($request->company_name)."%");
+        $request->name && $user->where("name","like","%".trim($request->name)."%");
+        $request->name && $request->company && $user->where("name","like","%".trim($request->name)."%")->where("company_name","like","%".trim($request->company)."%");
+        $request->name && $request->mobile && $user->where("name","like","%".trim($request->name)."%")->where("mobile","like","%".trim($request->mobile)."%");
+        $request->mobile && $user->where("mobile","like","%".trim($request->mobile)."%");
+        $request->mobile && $request->company && $user->where("mobile","like","%".trim($request->mobile)."%")->where("company_name","like","%".trim($request->company)."%");
+        $request->personal_id && $request->mobile && $user->where("personal_id","like","%".trim($request->personal_id)."%")->where("mobile","like","%".trim($request->mobile)."%");
+        $request->personal_id && $user->where("personal_id","like","%".trim($request->personal_id)."%");
+        $request->personal_id && $request->email && $user->where("personal_id","like","%".trim($request->personal_id)."%")->where("email","like","%".trim($request->email)."%");
+        $request->personal_id && $request->mobile && $user->where("personal_id","like","%".trim($request->personal_id)."%")->where("mobile","like","%".trim($request->mobile)."%");
+        $request->email && $user->where("email","like","%".trim($request->email)."%");
+        $request->id_code && $user->where("identification_code","like","%".trim($request->id_code)."%");
+        $request->id_code && $request->email && $user->where("identification_code","like","%".trim($request->id_code)."%")->where("email","like","%".trim($request->email)."%");
+        $request->permission && $user->where("permission","like","%".trim($request->permission)."%");
+        $request->status && $user->where("status","like","%".trim($request->status)."%");
+        $request->permission && $request->status && $user->where("permission","like","%".trim($request->permission)."%")->where("status","like","%".trim($request->status)."%");
+        $request->permission && $request->mobile && $user->where("permission","like","%".trim($request->permission)."%")->where("mobile","like","%".trim($request->mobile)."%");
 
         return $user->paginate(30);
     }
 
-    /**
-     * @method GET
-     * @param null
-     * @return json
-     * 
-     * მოცემული მეთოდის დახმარებით ხდება კონკრეტული მომხმარებლის ინფორმაციის გამოტანა
-     */
     public function getUser(int $id) {
         return User::find($id);
     }
 
-    /**
-     * @method POST
-     * @param int id
-     * @return json
-     * 
-     * მოცემული მეთოდის დახმარებით ხდება მომხმარებლის სტატუსის ცვლილება
-     */
     public function change(int $id) {
         try {
             $user = User::find($id);
-            $user->status = "active";
+            $user->status = ($user->status == "active") ? "pending" : "active";
             $user->save();
 
             return response()->json([
-                "success" => "სტატუსი შეიცვალა.",
+                "success" => "ავტორიზირდა.",
                 "users" => User::orderBy("id", "DESC")->paginate(30)
             ], 200);
         }catch(Exception $e) {
             return response()->json([
-                "error" => "სტატუსი ვერ შეიცვალა."
+                "error" => "ვერ ავტორიზირდა."
             ], 422); 
         }
     }
@@ -202,14 +117,11 @@ class UserController extends Controller
         }
     }
 
-    /**
-     * @method GET
-     * @param null
-     * @return json
-     * 
-     * მოცემული მეთოდის დახმარებით ხდება ოპერატორების წამოღება ბაზიდან
-     */
     public function operators() {
         return User::where("permission", "like", "%operator%")->get();
+    }
+
+    public function userReport(Request $request) {
+        return Excel::download(new UserExport(), "users.xlsx");
     }
 }

@@ -11,12 +11,13 @@ use App\Models\ChangeOperatorLog;
 use App\Models\Product;
 use App\Models\Attachements;
 use App\Models\User;
+use App\Exports\StatementExport;
+use Carbon\Carbon;
 use Auth;
 use DB;
-use Carbon\Carbon;
 use PDF;
 use Excel;
-use App\Exports\StatementExport;
+use Mail;
 
 class StatementController extends Controller
 {
@@ -27,15 +28,21 @@ class StatementController extends Controller
     public function index(int $id = null)
     {
         if(Auth::user()->permission == "company") {
-            return Statement::where("user_id", Auth::id())->orderBy("id", "DESC")->paginate(30);
+            return Statement::where("user_id", Auth::id())->orderBy("id", "DESC")->paginate(30)->through(function($item) {
+                return $item->makeHidden(["logs", "files", "statement_products", "created_at", "updated_at", "attachement_id", "comment", "deleted_at"]);
+            });;
         }
 
         if(Auth::user()->permission == "coordinator") {
-            return Statement::orderBy("id", "DESC")->paginate(30);
+            return Statement::orderBy("id", "DESC")->paginate(30)->through(function($item) {
+                return $item->makeHidden(["logs", "files", "statement_products", "created_at", "updated_at", "attachement_id", "comment", "deleted_at"]);
+            });
         }
 
         if(Auth::user()->permission == "operator") {
-            return Statement::where("operator_id", Auth::id())->orderBy("id", "DESC")->paginate(30);
+            return Statement::where("operator_id", Auth::id())->orderBy("id", "DESC")->paginate(30)->through(function($item) {
+                return $item->makeHidden(["logs", "files", "statement_products", "created_at", "updated_at", "attachement_id", "comment", "deleted_at"]);
+            });;
         }
     }
 
@@ -256,131 +263,58 @@ class StatementController extends Controller
         // }
     }
 
+    /**
+     * @method POST
+     * @return json
+     * @param Reuest
+     * 
+     * განაცხადების ძებნის მეთოდი
+     */
     public function filterStatement(Request $request) {
-        $statement = "";
+        $statement = Statement::orderBy('id', 'DESC');
+
+        $requestProperties = ["overhead_number", "overhead_date", "card_number", "store_address", "full_amount", "beneficiary_name", "status"];
         
         if(Auth::user()->permission == "company") {
-            $statement = Statement::where("user_id", Auth::id())->orderBy('id', 'DESC');
-
             if($request->company_name != null) {
                 $statement->whereHas("company_user", function($query) use($request) {
-                    $query->where("company_name", "like", "%" . $request->company_name . "%");
+                    $query->where("company_name", "like", "%" . trim($request->company_name) . "%")->where("user_id", Auth::id());
                 });
             }
-            
-            if($request->overhead_date != null) {
-                $statement->where("user_id", Auth::id())->where("overhead_date", $request->overhead_date);
-            }
-    
-            if($request->card_number != null) {
-                $statement->where("user_id", Auth::id())->where("card_number", $request->card_number);
-            }
-    
-            if($request->store_address != null) {
-                $statement->where("user_id", Auth::id())->where("store_address", "like", "%" . $request->store_address . "%");
-            }
-    
-            if($request->full_amount != null) {
-                $statement->where("user_id", Auth::id())->where("full_amount", "like", "%" . $request->full_amount . "%");
-            }
-            
-            if($request->beneficiary_name != null) {
-                $statement->where("user_id", Auth::id())->where("beneficiary_name", "like", "%" . $request->beneficiary_name . "%");
-            }
-            
-            if($request->status != null) {
-                $statement->where("user_id", Auth::id())->where("status", "like", "%" . $request->status . "%");
+
+            for($i = 0; $i < sizeof($requestProperties); $i++) {
+                if($request->{$requestProperties[$i]} != null) {
+                    $statement->where($requestProperties[$i], "like", "%" . trim($request->{$requestProperties[$i]}) . "%")->where("user_id", Auth::id());
+                }
             }
         }else if(Auth::user()->permission == "operator") {
-            $statement = Statement::where("operator_id", Auth::id())->orderBy('id', 'DESC');
-
             if($request->company_name != null) {
                 $statement->whereHas("company_user", function($query) use($request) {
-                    $query->where("company_name", "like", "%" . $request->company_name . "%");
+                    $query->where("company_name", "like", "%" . trim($request->company_name) . "%")->where("operator_id", Auth::id());
                 });
             }
 
-            if($request->overhead_number != null) {
-                $statement->where("overhead_number", "like", "%" . $request->overhead_number . "%");
-            }
-            
-            if($request->overhead_date != null) {
-                $statement->where("overhead_date", "like", "%" . $request->overhead_date . "%");
-            }
-    
-            if($request->card_number != null) {
-                $statement->where("card_number", $request->card_number);
-            }
-    
-            if($request->store_address != null) {
-                $statement->where("store_address", "like", "%" . $request->store_address . "%");
-            }
-    
-            if($request->full_amount != null) {
-                $statement->where("full_amount", "like", "%" . $request->full_amount . "%");
-            }
-            
-            if($request->beneficiary_name != null) {
-                $statement->where("beneficiary_name", "like", "%" . $request->beneficiary_name . "%");
-            }
-            
-            if($request->status != null) {
-                $statement->where("status", "like", "%" . $request->status . "%");
+            for($i = 0; $i < sizeof($requestProperties); $i++) {
+                if($request->{$requestProperties[$i]} != null) {
+                    $statement->where($requestProperties[$i], "like", "%" . trim($request->{$requestProperties[$i]}) . "%")->where("operator_id", Auth::id());
+                }
             }
         }else {
-            $statement = Statement::orderBy('id', 'DESC');
-
             if($request->company_name != null) {
                 $statement->whereHas("company_user", function($query) use($request) {
-                    $query->where("company_name", "like", "%" . $request->company_name . "%");
+                    $query->where("company_name", "like", "%" . trim($request->company_name) . "%");
                 });
             }
 
-            if($request->overhead_number != null) {
-                $statement->where("overhead_number", "like", "%" . $request->overhead_number . "%");
-            }
-            
-            if($request->overhead_date != null) {
-                $statement->where("overhead_date", $request->overhead_date);
-            }
-    
-            if($request->card_number != null) {
-                $statement->where("card_number", $request->card_number);
-            }
-    
-            if($request->store_address != null) {
-                $statement->where("store_address", "like", "%" . $request->store_address . "%");
-            }
-    
-            if($request->full_amount != null) {
-                $statement->where("full_amount", "like", "%" . $request->full_amount . "%");
-            }
-            
-            if($request->beneficiary_name != null) {
-                $statement->where("beneficiary_name", "like", "%" . $request->beneficiary_name . "%");
-            }
-            
-            if($request->status != null) {
-                $statement->where("status", "like", "%" . $request->status . "%");
+            for($i = 0; $i < sizeof($requestProperties); $i++) {
+                if($request->{$requestProperties[$i]} != null) {
+                    $statement->where($requestProperties[$i], "like", "%" . trim($request->{$requestProperties[$i]}) . "%");
+                }
             }
         }
 
         return $statement->paginate(30);
     }
-
-    // public function generatePdf(int $id) {
-    //     $data = "";        
-
-    //     if(Auth::user()?->permission == "company") {
-    //         $data = Statement::where("id", $id)->where("user_id", Auth::id())->first();
-    //     }
-
-    //     if(Auth::user()?->permission == "coordinator" || Auth::user()?->permission == "operator") {
-    //         $data = Statement::find($id);
-    //     }
-
-    //     return PDF::loadView("pdf.statement", [ "data" => $data ])->setOption(['defaultFont' => 'sans-serif'])->stream("statement.pdf");
-    // }
 
     public function changeStatus(Request $request, int $id) {
         if($request->status != "approved") {
@@ -408,6 +342,14 @@ class StatementController extends Controller
                 $change->status = "rejected";
                 $change->comment = $request->comment;
                 $change->operator_id = $change->operator_id;
+
+                $targetEmail = User::find($change->user_id);
+
+                Mail::send("mail.notify", ["comment" => $request->comment, "statement_id" => $id], function($message) use($request, $id, $targetEmail) {
+                    $message->to($targetEmail->email);
+                    $message->from("info@rda.gov.ge", "სოფლის განვითარების სააგენტო - (RDA)");
+                    $message->subject("განაცხადის დახარვეზება");
+                });
             }
             
             if($request->status == "stopped") {
@@ -435,6 +377,7 @@ class StatementController extends Controller
                 "approved" => Statement::where("status", "approved")->where("operator_id", Auth::id())->get()->count(),
                 "stopped" => Statement::where("status", "stopped")->where("operator_id", Auth::id())->get()->count(),
                 "new" => Statement::where("status", "new")->where("operator_id", Auth::id())->get()->count(),
+                "user" => Auth::user(),
             ];
         }
 
@@ -444,6 +387,7 @@ class StatementController extends Controller
                 "approved" => Statement::where("status", "approved")->get()->count(),
                 "stopped" => Statement::where("status", "stopped")->get()->count(),
                 "new" => Statement::where("status", "new")->get()->count(),
+                "user" => Auth::user(),
             ];
         }
 
@@ -453,6 +397,7 @@ class StatementController extends Controller
                 "approved" => Statement::where("status", "approved")->where("user_id", Auth::id())->get()->count(),
                 "stopped" => Statement::where("status", "stopped")->where("user_id", Auth::id())->get()->count(),
                 "new" => Statement::where("status", "new")->where("user_id", Auth::id())->get()->count(),
+                "user" => Auth::user(),
             ];
         }
     }

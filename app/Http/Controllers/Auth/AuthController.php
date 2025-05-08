@@ -6,17 +6,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Auth;
-use Hash;
 
 class AuthController extends Controller
 {
-    /**
-     * @method POST
-     * @return json
-     * @param Request
-     * 
-     * ავტორიზაციის მეთოდი
-     */
     public function signin(Request $request) {
         $data = $this->validate($request, [
             "email" => "required|email",
@@ -41,13 +33,6 @@ class AuthController extends Controller
         }
     }
 
-    /**
-     * @method POST
-     * @return json
-     * @param Request
-     * 
-     * რეგისტრაციის მეთოდი
-     */
     public function signup(Request $request) {
         $this->validate($request, [
             'name' => 'required',
@@ -120,7 +105,7 @@ class AuthController extends Controller
             "success" => [
                 "message" => [
                     "success" => [
-                        "პაროლის შეცვლა განხორციელდა."
+                        "ავტორიზაცია განხორციელდა."
                     ]
                 ],
             ]
@@ -129,16 +114,22 @@ class AuthController extends Controller
 
     /**
      * @method POST
-     * @param Request
      * @return json
+     * @param null
      * 
      * სისტემიდან გამოსვლის მეთოდი
      */
     public function signout(Request $request) {
-        Auth::logout();
+        $request->user()->token()->revoke();
 
         return response()->json([
-            "success" => "სისტემიდან გამოსვლა განხორციელდა."
+            "success" => [
+                "message" => [
+                    "success" => [
+                        "სისტემიდან გამოსვლა განხორციელდა."
+                    ]
+                ],
+            ]
         ], 200);
     }
 }
