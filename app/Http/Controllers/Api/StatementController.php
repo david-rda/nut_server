@@ -24,6 +24,7 @@ class StatementController extends Controller
     /**
      * Display a listing of the resource.
      * @method GET
+     * @return json
      */
     public function index(int $id = null)
     {
