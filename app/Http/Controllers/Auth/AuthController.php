@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Auth;
+use Hash;
 
 class AuthController extends Controller
 {
@@ -81,7 +82,7 @@ class AuthController extends Controller
 
     public function changePassword(Request $request) {
         $this->validate($request, [
-            'current_password' => "required|min:4|regex:/[a-z]/|regex:/[A-Z]/|regex:/[0-9]/|regex:/[!@#?$%&*)(]/",
+            'current_password' => "required",
             'new_password' => "required|min:4|regex:/[a-z]/|regex:/[A-Z]/|regex:/[0-9]/|regex:/[!@#?$%&*)(]/",
             'confirm_password' => "required|min:4|regex:/[a-z]/|regex:/[A-Z]/|regex:/[0-9]/|regex:/[!@#?$%&*)(]/|same:new_password"
         ]);
@@ -92,7 +93,7 @@ class AuthController extends Controller
             return response()->json([
                 "errors" => [
                     "error" => [
-                        "მიმდინარე პაროლი მიუთითეთ სწორად!"
+                        "მიმდინარე პაროლი მიუთითეთ სწორად."
                     ]
                 ]
             ], 422);

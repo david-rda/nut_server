@@ -126,7 +126,7 @@ class StatementController extends Controller
 
     public function deleteFile(int $id) {
         $statement = Statement::where("id", Attachements::find($id)?->statement_id)->first();
-        $delete = Attachements::find($id)->delete();
+        $delete = Attachements::find($id)?->delete();
 
         if($delete) {
             return response()->json([

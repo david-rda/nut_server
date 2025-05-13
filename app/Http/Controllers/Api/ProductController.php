@@ -21,7 +21,7 @@ class ProductController extends Controller
     }
 
     public function byStatus() {
-        return Product::where("status", "enabled")->get();
+        return Product::select("name", "id")->where("status", "enabled")->get();
     }
 
     /**
