@@ -7,6 +7,8 @@ use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\StatementController;
 use App\Http\Controllers\Api\PasswordController;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Models\Product;
 
 Route::post("/signin", [AuthController::class, "signin"]); // ავტორიზაციის მარსუტი
 Route::post("/signup", [AuthController::class, "signup"]); // რეგისტრაციის მარშუტი
@@ -56,4 +58,45 @@ Route::group(["prefix" => "password"], function() {
     Route::post("/send/reset", [PasswordController::class, "sendReset"]);
     Route::post("/reset", [PasswordController::class, "reset"]);
     Route::get("/reset/check/{token}/{email}", [PasswordController::class, "check"]);
+});
+
+Route::get("/inserts", function() {
+    // $data = Excel::toCollection("data", "old.xlsx");
+
+    // for($i = 1; $i < sizeof($data[0]); $i++) {
+    //     Product::where("id", $data[0][$i][0])->update([
+    //         "name" => $data[0][$i][1]
+    //     ]);
+    // }
+
+    // $arr = [];
+
+    // $data = Excel::toCollection("data", "import_products.xlsx");
+
+    // foreach(Product::where("status", "disabled")->where("created_at", ">", "2025-04-25")->get() as $key => $value) {
+    //     array_push($arr, $value->name . " -- " . $data[0][$key + 1][0]);
+    // }
+
+    // dd($arr);
+
+    // $data = Excel::toCollection("data", "products.xlsx");
+
+    // // Product::where("status", "enabled")->update([
+    // //     "status" => "disabled"
+    // // ]);
+
+    // $arr = [];
+
+    // for($i = 0; $i < sizeof($data[0]); $i++) {
+    //     array_push($arr, $data[0][$i][0]);
+    // }
+
+    // foreach($arr as $key) {
+    //     Product::insert([
+    //         "name" => $key,
+    //         "status" => "enabled",
+    //         "created_at" => \Carbon\Carbon::now(),
+    //         "updated_at" => \Carbon\Carbon::now(),
+    //     ]);
+    // }
 });
