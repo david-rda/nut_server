@@ -7,12 +7,10 @@ use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\StatementController;
 use App\Http\Controllers\Api\PasswordController;
-use Maatwebsite\Excel\Facades\Excel;
-use App\Models\Product;
 
 Route::post("/signin", [AuthController::class, "signin"]); // ავტორიზაციის მარსუტი
 Route::post("/signup", [AuthController::class, "signup"]); // რეგისტრაციის მარშუტი
-Route::get("/signout", [AuthController::class, "signout"])->middleware("auth:api"); // სისტემიდან გასვლის მარშუტი
+Route::get("/signout", [AuthController::class, "signout"]); // სისტემიდან გასვლის მარშუტი
 
 Route::post("/change_password", [AuthController::class, "changePassword"])->middleware("auth:api"); // პაროლის ცვლილების მარშუტი
 
@@ -50,8 +48,11 @@ Route::group(["prefix" => "statement", "middleware" => "auth:api"], function() {
     Route::get("/report/{from?}/{to?}/{user_id?}", [StatementController::class, "downloadExcel"]); // განაცხადების რეპორტის მარშუტი
 });
 
-Route::post("/statement/file/upload", [StatementController::class, "uploadFile"]); // განაცხადისთვის ფაილის ატვირთვის მარშუტი
-Route::get("/statement/file/delete/{id}", [StatementController::class, "deleteFile"]); // განაცხადზე მიმაგრებული ფაილის წაშლის მარშუტი
+// ფაილების ატვირთვა/წაშლის მარშუტები
+Route::group(["prefix" => "statement"], function() {
+    Route::post("/file/upload", [StatementController::class, "uploadFile"]); // განაცხადისთვის ფაილის ატვირთვის მარშუტი
+    Route::get("/file/delete/{id}", [StatementController::class, "deleteFile"]); // განაცხადზე მიმაგრებული ფაილის წაშლის მარშუტი
+});
 
 // პაროლის აღდგენის მაღშუტები
 Route::group(["prefix" => "password"], function() {
@@ -60,7 +61,7 @@ Route::group(["prefix" => "password"], function() {
     Route::get("/reset/check/{token}/{email}", [PasswordController::class, "check"]);
 });
 
-Route::get("/inserts", function() {
+// Route::get("/inserts", function() {
     // $data = Excel::toCollection("data", "old.xlsx");
 
     // for($i = 1; $i < sizeof($data[0]); $i++) {
@@ -99,4 +100,4 @@ Route::get("/inserts", function() {
     //         "updated_at" => \Carbon\Carbon::now(),
     //     ]);
     // }
-});
+// });

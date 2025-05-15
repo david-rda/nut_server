@@ -121,7 +121,7 @@ class AuthController extends Controller
      * სისტემიდან გამოსვლის მეთოდი
      */
     public function signout(Request $request) {
-        $request->user()->token()->revoke();
+        Auth::logout();
 
         return response()->json([
             "success" => [
