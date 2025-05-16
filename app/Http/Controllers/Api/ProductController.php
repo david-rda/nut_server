@@ -31,12 +31,16 @@ class ProductController extends Controller
     {
         $this->validate($request, [
             "title" => "required",
-            "status" => "required"
+            "status" => "required",
+            "maturity" => "required",
+            "set_number" => "required",
         ]);
 
         $product = new Product();
         $product->name = $request->title;
         $product->status = $request->status;
+        $product->maturity = $request->maturity;
+        $product->set_number = $request->set_number;
         $product->save();
 
         if($product) {
@@ -65,12 +69,16 @@ class ProductController extends Controller
     {
         $this->validate($request, [
             "title" => "required",
-            "status" => "required"
+            "status" => "required",
+            "maturity" => "required",
+            "set_number" => "required",
         ]);
 
         $product = Product::find($id);
         $product->name = $request->title;
         $product->status = $request->status;
+        $product->maturity = $request->maturity;
+        $product->set_number = $request->set_number;
         $product->save();
 
         if($product) {
