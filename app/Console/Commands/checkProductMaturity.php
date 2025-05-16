@@ -3,6 +3,8 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+// use App\Models\Product;
+// use Carbon\Carbon;
 
 class checkProductMaturity extends Command
 {
@@ -25,6 +27,6 @@ class checkProductMaturity extends Command
      */
     public function handle()
     {
-        //
+        // $this->info(Product::first());
     }
 }
